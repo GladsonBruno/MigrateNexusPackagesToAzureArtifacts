@@ -1,0 +1,34 @@
+FROM alpine:3.17.1
+LABEL maintainer "Gladson Bruno <gladsonbruno16@gmail.com>"
+
+# Install OpenJDK 11
+RUN apk add openjdk11
+# Install Maven 3.8.6
+RUN apk add maven=3.8.6-r0
+# Install NodeJS and NPM
+RUN apk add nodejs=18.12.1-r0
+RUN apk add npm=9.1.2-r0
+
+# Install dependencies to install Nuget
+## Install mono to execute nuget.exe
+RUN apk add --no-cache mono --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing && \
+    apk add --no-cache --virtual=.build-dependencies ca-certificates && \
+    cert-sync /etc/ssl/certs/ca-certificates.crt && \
+    apk del .build-dependencies
+
+## Add curl package and download nuget package
+RUN apk add curl && curl -o /usr/local/bin/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
+# Create alias to nuget with mono
+RUN echo 'alias nuget="mono /usr/local/bin/nuget.exe"'>> alias.sh
+RUN echo 'export nuget'>> alias.sh
+# Apply permanent alias with alias.sh and /etc/profile mapping
+RUN mv alias.sh /etc/profile.d/alias.sh 
+ENV ENV=/etc/profile
+
+# Upgrading image vulnerabilities
+RUN apk upgrade libjpeg-turbo --update-cache
+RUN apk update upgrade
+RUN sed -i -e 's/v[[:digit:]]\..*\//edge\//g' /etc/apk/repositories
+RUN apk upgrade musl --update-cache
+
+CMD /etc/profile.d/alias.sh

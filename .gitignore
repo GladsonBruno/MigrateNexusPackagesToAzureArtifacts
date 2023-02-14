@@ -1,0 +1,6 @@
+/build
+/downloads
+.env
+package-lock.json
+/node_modules
+nuget.config

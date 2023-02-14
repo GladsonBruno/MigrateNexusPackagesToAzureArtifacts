@@ -1,0 +1,24 @@
+{
+  "name": "arq-migrate-nexus-to-azure-artifacts",
+  "version": "2.0.0",
+  "description": "Utilitário desenvolvido para realizar o download de pacotes nexus e migrá-los para o azure artifacts",
+  "main": "Index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node build/Index.js",
+    "start:production": "node build/Index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "gladsonbruno16@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.25.0",
+    "colors.ts": "^1.0.20",
+    "dotenv": "^16.0.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.16",
+    "typescript": "^4.5.5"
+  }
+}

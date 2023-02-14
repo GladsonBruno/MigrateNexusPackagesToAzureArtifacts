@@ -1,0 +1,38 @@
+version: '3'
+services:
+    migrate_nexus_to_az_artifacts:
+      container_name: MigrateNexusToAzureArtifacts
+      image: migrate-nexus-to-azure-artifacts:latest
+      network_mode: "host"  
+      environment:
+      # Variaveis para migração em lote para Maven
+#        azure_token: MY_PERSONAL_ACCESS_TOKEN
+#        azure_username: T000000
+#        download_path: ./packages
+#        feed_name: feed-name
+#        feed_source_url: https://pkgs.dev.azure.com/organization-name/_packaging/feed-name/maven/v1
+#        nexus_url: http://nexus-url:nexus-port
+#        repository_name: repository-name
+#        package_type: maven
+#        migration_type: batch
+#        upload_limit_size_in_mb: 20
+      # Variaveis para migração em lote para .NET
+#        azure_token: MY_PERSONAL_ACCESS_TOKEN
+#        azure_username: T000000
+#        download_path: ./packages
+#        feed_name: feed-name
+#        feed_source_url: https://pkgs.dev.azure.com/organization-name/_packaging/feed-name/nuget/v3/index.json
+#        nexus_url: http://nexus-url:nexus-port
+#        repository_name: repository-name
+#        package_type: nuget
+#        migration_type: batch
+      # Variaveis para migração de planilha
+        azure_token: MY_PERSONAL_ACCESS_TOKEN
+        azure_username: T000000
+        download_path: ./packages
+        nexus_url: http://nexus-url:nexus-port
+        migration_type: xlsx
+        xlsx_file_path: ./xlsx_config/MigrationInfo.xlsx
+        upload_limit_size_in_mb: 20
+      volumes:
+        - ./xlsx_config:/home/codigo/xlsx_config

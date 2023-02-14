@@ -1,0 +1,46 @@
+trigger:
+  branches:
+    include:
+      - master
+      - develop
+
+variables:
+  - group: arq-devops-migrate-nexus-to-azure-artifacts
+  - group: container-registry-commom
+
+resources:
+  repositories:
+  - repository: templates
+    type: git
+    name: Tech/arq-devops-template-pipelines
+    ref: 'refs/heads/master'
+
+stages:
+  - stage: build_base_image
+    displayName: "Build Base Image"
+    variables:
+      IMAGE_NAME: $(BASE_IMAGE_NAME)
+    jobs: 
+      - template: /node/rosa_pipeline/jobs/build-job.yaml@templates
+        parameters:
+          APPLICATION_VERSION: $(BASE_IMAGE_VERSION)
+          DOCKER_BUILD_ARGS: ''
+          DOCKER_BUILD_CONTEXT_FOLDER: '$(Build.SourcesDirectory)'
+          DOCKERFILE_PATH: '$(Build.SourcesDirectory)/Dockerfile-Base-Image'
+          EXECUTE_GITVERSION: false
+          PACKAGE_JSON_FILE_LOCATION: '$(Build.SourcesDirectory)/package.json'
+
+  - stage: build_application
+    displayName: "Build Application Image"
+    dependsOn: [ 'build_base_image' ]
+    variables:
+      IMAGE_NAME: $(APPLICATION_IMAGE_NAME)
+    jobs: 
+      - template: /node/rosa_pipeline/jobs/build-job.yaml@templates
+        parameters:
+          APPLICATION_VERSION: $(APPLICATION_IMAGE_VERSION)
+          DOCKER_BUILD_ARGS: ''
+          DOCKER_BUILD_CONTEXT_FOLDER: '$(Build.SourcesDirectory)'
+          DOCKERFILE_PATH: '$(Build.SourcesDirectory)/Dockerfile'
+          EXECUTE_GITVERSION: false
+          PACKAGE_JSON_FILE_LOCATION: '$(Build.SourcesDirectory)/package.json'

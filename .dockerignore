@@ -1,0 +1,6 @@
+build/
+node_modules/
+packages/
+.env.example.xlsx_migration
+.env.maven.example
+.env.nuget.example
